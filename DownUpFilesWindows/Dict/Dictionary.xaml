@@ -1,0 +1,11 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Storyboard x:Key="FadeOut" x:Name="FadeOut" Duration="0:0:0.5">
+        <DoubleAnimation Duration="0:0:0.5" From="100" To="0" Storyboard.TargetProperty="Opacity">
+            <DoubleAnimation.EasingFunction>
+                <ExponentialEase Exponent="4.5" EasingMode="EaseIn" />
+            </DoubleAnimation.EasingFunction>
+        </DoubleAnimation>
+    </Storyboard>
+</ResourceDictionary>
