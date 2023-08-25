@@ -39,7 +39,7 @@
             c &= c1;
             foreach( var ch in Size)
             {
-                c += ch;
+            c += ch;
                 x += ch;
             }
             c1 |= c;
