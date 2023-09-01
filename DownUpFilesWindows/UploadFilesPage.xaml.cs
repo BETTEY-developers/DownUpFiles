@@ -193,21 +193,19 @@ namespace DownUpFilesWindows
                     FileItems = Items.ToList()
                 };
                 
-                void Create(StreamedFileDataRequest streamedFileData)
-                {
-                    JsonSerializer.Serialize(streamedFileData.AsStreamForWrite(), Items, typeof(IEnumerable<FileItem>));
-                }
-
-                StorageFile.CreateStreamedFileAsync("DownUpFilesWindows.FilesList.json", Create, null);
+                StorageFolder storage = ApplicationData.Current.LocalFolder;
+                StorageFile file = await storage.CreateFileAsync("DownUpFilesWindows.FilesList.json", CreationCollisionOption.ReplaceExisting);
+                await FileIO.WriteTextAsync(file, JsonSerializer.Serialize(findex));
                 message = "列表文件已经生成！";
             }
 
-            MessageDialog md = new MessageDialog(message);
-            md.Title = "";
-
-            md.Commands.Add(new UICommand("确定"));
-            md.CancelCommandIndex = 0;
-            md.DefaultCommandIndex = 0;
+            ContentDialog md = new ContentDialog
+            {
+                Title = "信息",
+                Content = new TextBlock() { Text = message },
+                CloseButtonText = "确定",
+                DefaultButton = ContentDialogButton.Close
+            };
 
             await md.ShowAsync();
         }
@@ -362,6 +360,50 @@ namespace DownUpFilesWindows
             }
         }
 
-        
+        private async void SaveListAs_Click(object sender, RoutedEventArgs e)
+        {
+            string message = "";
+
+            if (Items.Count == 0)
+            {
+                message = "列表为空";
+            }
+            else
+            {
+                FileIndex findex = new FileIndex()
+                {
+                    Version = 1,
+                    Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm"),
+                    FileItems = Items.ToList()
+                };
+
+                FileSavePicker fileSavePicker = new FileSavePicker();
+                fileSavePicker.FileTypeChoices.Add("文件列表(*.json)", Enumerable.Repeat(".json", 1).ToList());
+                fileSavePicker.CommitButtonText = "确定";
+                fileSavePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+
+                var stofile = await fileSavePicker.PickSaveFileAsync();
+                if(stofile != null )
+                {
+                    await FileIO.WriteTextAsync(stofile, JsonSerializer.Serialize(findex));
+                    message = "列表文件已经生成！";
+                }
+                else
+                {
+                    message = "用户取消了这次操作";
+                    
+                }
+            }
+
+            ContentDialog md = new ContentDialog
+            {
+                Title = "信息",
+                Content = new TextBlock() { Text = message },
+                CloseButtonText = "确定",
+                DefaultButton = ContentDialogButton.Close
+            };
+
+            await md.ShowAsync();
+        }
     }
 }

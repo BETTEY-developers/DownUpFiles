@@ -8,4 +8,5 @@
             </DoubleAnimation.EasingFunction>
         </DoubleAnimation>
     </Storyboard>
+    
 </ResourceDictionary>

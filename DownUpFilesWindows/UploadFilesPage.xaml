@@ -16,6 +16,93 @@
             <Setter Property="Margin" Value="10,0,10,0"/>
             <Setter Property="CornerRadius" Value="4"/>
         </Style>
+
+        <ControlTemplate TargetType="ListViewItem" x:Key="ListViewItemTemplate">
+            <ListViewItemPresenter ContentTransitions="{TemplateBinding ContentTransitions}"
+                        x:Name="Root"
+                        Control.IsTemplateFocusTarget="True"
+                        FocusVisualMargin="{TemplateBinding FocusVisualMargin}"
+                        SelectionCheckMarkVisualEnabled="{ThemeResource ListViewItemSelectionCheckMarkVisualEnabled}"
+                        CheckBrush="{ThemeResource ListViewItemCheckBrush}"
+                        CheckBoxBrush="{ThemeResource ListViewItemCheckBoxBrush}"
+                        DragBackground="{ThemeResource ListViewItemDragBackground}"
+                        DragForeground="{ThemeResource ListViewItemDragForeground}"
+                        FocusBorderBrush="{ThemeResource ListViewItemFocusBorderBrush}"
+                        FocusSecondaryBorderBrush="{ThemeResource ListViewItemFocusSecondaryBorderBrush}"
+                        PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackground}"
+                        PointerOverBackground="{ThemeResource ListViewItemBackgroundPointerOver}"
+                        PointerOverForeground="{ThemeResource ListViewItemForegroundPointerOver}"
+                        SelectedBackground="Transparent"
+                        SelectedForeground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                        SelectedPointerOverBackground="{ThemeResource ListViewItemBackgroundPointerOver}"
+                        PressedBackground="{ThemeResource ListViewItemBackgroundPressed}"
+                        SelectedPressedBackground="{ThemeResource ListViewItemBackgroundPressed}"
+                        DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+                        DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+                        ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+                        HorizontalContentAlignment="Stretch"
+                        VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                        ContentMargin="{TemplateBinding Padding}"
+                        CheckMode="{ThemeResource ListViewItemCheckMode}"
+                        RevealBackground="{ThemeResource ListViewItemRevealBackground}"
+                        RevealBorderThickness="{ThemeResource ListViewItemRevealBorderThemeThickness}"
+                        RevealBorderBrush="{ThemeResource ListViewItemRevealBorderBrush}">
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected" />
+
+                        <VisualState x:Name="PointerOver">
+                            <VisualState.Setters>
+                                <Setter Target="Root.(RevealBrush.State)" Value="PointerOver" />
+                                <Setter Target="Root.RevealBorderBrush" Value="{ThemeResource ListViewItemRevealBorderBrushPointerOver}" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="PointerOverSelected">
+                            <VisualState.Setters>
+                                <Setter Target="Root.(RevealBrush.State)" Value="PointerOver" />
+                                <Setter Target="Root.RevealBorderBrush" Value="{ThemeResource ListViewItemRevealBorderBrushPointerOver}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                        <VisualState x:Name="PointerOverPressed">
+                            <VisualState.Setters>
+                                <Setter Target="Root.(RevealBrush.State)" Value="Pressed" />
+                                <Setter Target="Root.RevealBorderBrush" Value="{ThemeResource ListViewItemRevealBorderBrushPressed}" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="Pressed">
+                            <VisualState.Setters>
+                                <Setter Target="Root.(RevealBrush.State)" Value="Pressed" />
+                                <Setter Target="Root.RevealBorderBrush" Value="{ThemeResource ListViewItemRevealBorderBrushPressed}" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                        <VisualState x:Name="PressedSelected">
+                            <VisualState.Setters>
+                                <Setter Target="Root.(RevealBrush.State)" Value="Pressed" />
+                                <Setter Target="Root.RevealBorderBrush" Value="{ThemeResource ListViewItemRevealBorderBrushPressed}" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                    </VisualStateGroup>
+
+                    <VisualStateGroup x:Name="DisabledStates">
+                        <VisualState x:Name="Enabled" />
+
+                        <VisualState x:Name="Disabled">
+                            <VisualState.Setters>
+                                <Setter Target="Root.RevealBorderThickness" Value="0" />
+                            </VisualState.Setters>
+                        </VisualState>
+
+                    </VisualStateGroup>
+
+                </VisualStateManager.VisualStateGroups>
+            </ListViewItemPresenter>
+
+        </ControlTemplate>
     </Page.Resources>
     
     <Grid Padding="32" ScrollViewer.VerticalScrollMode="Enabled">
@@ -51,8 +138,16 @@
                     <TextBlock VerticalAlignment="Center" x:Uid="FilesSettingTitleTextBlock" FontSize="20" HorizontalAlignment="Left">文件传输</TextBlock>
                     <RelativePanel VerticalAlignment="Center" Margin="20,0,0,0" BorderBrush="{ThemeResource ButtonBorderThemeBrush}" BorderThickness="1" CornerRadius="4" Background="{ThemeResource SystemChromeLowColor}">
                         <CommandBar DefaultLabelPosition="Right" Background="Transparent" Margin="0,5">
-                            <AppBarButton Icon="Add" x:Uid="AddFilesButton" x:Name="AddFiles" HorizontalAlignment="Right" Click="AddFiles_Click" Label="添加文件"/>
-                            <AppBarButton Icon="Edit" x:Uid="AddFilesButton" x:Name="CreateListToFile" HorizontalAlignment="Right" Click="UploadFileList_Click" Label="生成文件列表"/>
+                            <AppBarButton Icon="Add" x:Uid="AddFilesButton" x:Name="AddFiles" HorizontalAlignment="Right" Label="添加文件">
+                            </AppBarButton>
+                            <AppBarButton Icon="Edit" x:Uid="SaveFilesListButton" x:Name="CreateListToFile" HorizontalAlignment="Right" Label="生成文件列表">
+                                <AppBarButton.Flyout>
+                                    <MenuFlyout>
+                                        <MenuFlyoutItem Icon="Edit" Text="保存文件列表"/>
+                                        <MenuFlyoutItem Icon="Download" Text="自定义保存文件列表"/>
+                                    </MenuFlyout>
+                                </AppBarButton.Flyout>
+                            </AppBarButton>
                         </CommandBar>
                     </RelativePanel>
                 </StackPanel>
@@ -70,7 +165,7 @@
                               ItemsSource="{Binding Source={StaticResource FilesItemsSource}}">
                         <ListView.ItemTemplate>
                             <DataTemplate x:DataType="local:FileItem">
-                                <Grid>
+                                <Grid HorizontalAlignment="Stretch">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="auto"/>
                                         <ColumnDefinition Width="auto"/>
@@ -78,8 +173,8 @@
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <FontIcon Grid.Column="0" Glyph="&#xF000;"/>
-                                    <TextBlock Margin="20,6,0,0" Text="{x:Bind Name}" Grid.Column="1" FontSize="18.7" VerticalAlignment="Stretch" MaxWidth="250"/>
-                                    <TextBlock Margin="20,5,0,0" Text="{x:Bind Path}" HorizontalAlignment="Center" Grid.Column="2" FontSize="19" VerticalAlignment="Stretch" MaxWidth="450"/>
+                                    <TextBlock Margin="20,3,0,0"  Text="{x:Bind Name}" Grid.Column="1" FontSize="19" VerticalAlignment="Stretch" MaxWidth="250"/>
+                                    <TextBlock Margin="20,0,0,0" Text="{x:Bind Path}" HorizontalAlignment="Center" Grid.Column="2" FontSize="19" VerticalAlignment="Center" MaxWidth="450"/>
                                     <Grid Grid.Column="3" HorizontalAlignment="Right">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{x:Bind Size}" VerticalAlignment="Center"/>
@@ -91,13 +186,9 @@
                         </ListView.ItemTemplate>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="ListViewItem">
-                                            <ListViewItemPresenter SelectedBackground="Transparent"/>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                                <Setter Property="Template" Value="{StaticResource ListViewItemTemplate}"/>
+                                <Setter Property="Margin" Value="0,2"/>
+                                <Setter Property="Padding" Value="3" />
                             </Style>
                         </ListView.ItemContainerStyle>
                     </ListView>

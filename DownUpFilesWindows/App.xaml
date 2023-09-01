@@ -5,6 +5,5 @@
     xmlns:local="using:DownUpFilesWindows">
     <Application.Resources>
         <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-        
     </Application.Resources>
 </Application>
